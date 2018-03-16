@@ -21,5 +21,5 @@ type EntryIntf interface {
 	ToJson() string
 	Init(*http.Request) int
 	Nop()
-	Execute() int
+	Execute() (*EntryStu, int)
 }

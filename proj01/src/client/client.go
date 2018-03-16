@@ -7,7 +7,8 @@ func NewClientStu(Id string) *ClientStu {
 }
 
 type ClientStu struct {
-	Id string
+	Id   string
+	Data string
 }
 
 func (r *ClientStu) Init(Id string) {
@@ -16,4 +17,13 @@ func (r *ClientStu) Init(Id string) {
 
 func (r *ClientStu) GetThis() interface{} {
 	return r
+}
+func (r *ClientStu) GetData() interface{} {
+	return r
+}
+func (r *ClientStu) Update() (ret int) {
+	return
+}
+func (r *ClientStu) GetId() (Id string) {
+	return r.Id
 }

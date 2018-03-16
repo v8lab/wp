@@ -1,8 +1,8 @@
 package mux
 
 import (
+	"fmt"
 	"net/http"
-	"strconv"
 	"sync"
 
 	. "base"
@@ -27,28 +27,24 @@ func (r *MuxSysStu) Init() {
 }
 
 func SysHandle(w http.ResponseWriter, req *http.Request) {
-
 	var ret int
-
+	var EntryResp *EntryStu
 	defer func() {
 		Tool.SetHeader(w)
-
-		w.Header().Add("errcode", strconv.Itoa(ret))
-		w.Header().Add("errmsg", "")
-
 		if ret == 0 {
-
-		} else {
-			w.Write([]byte(""))
+			if EntryResp != nil {
+				w.Write([]byte(EntryResp.GetBody()))
+			}
 		}
 	}()
-
-	Entry := NewEntryKind("")
+	Factory := GetSingleFactory()
+	Problem := fmt.Sprintf("%v", req.URL)
+	Entry := Factory.Create(Problem)
 	ret = Entry.Init(req)
 	if ret != 0 {
 		return
 	}
-	ret = Entry.Execute()
+	EntryResp, ret = Entry.Execute()
 	if ret != 0 {
 
 	}

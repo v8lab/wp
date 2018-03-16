@@ -7,41 +7,41 @@ import (
 )
 
 func NewEntryKind(Kind string) (Entry EntryIntf) {
-	CreateFunc := GetSingleEntryFactory()
+	CreateFunc := GetSingleFactory()
 	Entry = CreateFunc.Create(Kind)
 	return
 }
 
-var SingleEntryFactory EntryFactoryStu
-var SingleEntryFactoryOnce sync.Once
+var SingleFactory EntryFactoryStu
+var SingleFactoryOnce sync.Once
 
-func GetSingleEntryFactory() *EntryFactoryStu {
-	SingleEntryFactoryOnce.Do(SingleEntryFactory.Init)
-	return &SingleEntryFactory
+func GetSingleFactory() *EntryFactoryStu {
+	SingleFactoryOnce.Do(SingleFactory.Init)
+	return &SingleFactory
 }
 
-type EntryCreateFunc func() (Entry EntryIntf)
+type CreateFunc func() (Entry EntryIntf)
 
 type EntryFactoryStu struct {
-	Factorys       map[string]EntryCreateFunc
-	UnknownFactory EntryCreateFunc
+	Factorys       map[string]CreateFunc
+	UnknownFactory CreateFunc
 }
 
 func (r *EntryFactoryStu) Create(Kind string) (Entry EntryIntf) {
-	if EntryCreateFunc, ok := r.Factorys[Kind]; ok {
-		Entry = EntryCreateFunc()
+	if Create, ok := r.Factorys[Kind]; ok {
+		Entry = Create()
 	} else {
 		Entry = r.UnknownFactory()
 	}
 	Entry.SetId(Tool.GenId())
 	return
 }
-func (r *EntryFactoryStu) Add(Kind string, CreateFunc EntryCreateFunc) {
-	r.Factorys[Kind] = CreateFunc
+func (r *EntryFactoryStu) Add(Kind string, Func CreateFunc) {
+	r.Factorys[Kind] = Func
 }
 
 func (r *EntryFactoryStu) Init() {
-	r.Factorys = make(map[string]EntryCreateFunc)
+	r.Factorys = make(map[string]CreateFunc)
 	r.UnknownFactory = func() EntryIntf { return &EntryUnkownStu{NewEmptyEntry(KINDUNKOWN)} }
 }
 
@@ -49,7 +49,7 @@ type EntryUnkownStu struct {
 	*EntryStu
 }
 
-func (r *EntryUnkownStu) Execute() (ret int) {
+func (r *EntryUnkownStu) Execute() (EntryOut *EntryStu, ret int) {
 
 	return
 }
