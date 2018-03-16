@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 const (
@@ -25,7 +26,7 @@ type EntryStu struct {
 	ErrCode    int         `json:"errcode"`
 	Method     string      `json:"method"`
 	Url        string      `json:"url"`
-	StatusCode int         `json:"status"`
+	Form       url.Values  `json:"url"`
 	Header     http.Header `json:"headers"`
 	Body       string      `json:"body"`
 }
@@ -40,6 +41,11 @@ func (r *EntryStu) Init(req *http.Request) (ret int) {
 	r.SetUrl(Url)
 
 	r.SetHeader(req.Header)
+	err := req.ParseForm()
+	if err != nil {
+		return -1
+	}
+	r.Form = req.Form
 
 	Body, err := ioutil.ReadAll(req.Body)
 	if err != nil {

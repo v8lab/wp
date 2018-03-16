@@ -38,7 +38,8 @@ func SysHandle(w http.ResponseWriter, req *http.Request) {
 		}
 	}()
 	Factory := GetSingleFactory()
-	Problem := fmt.Sprintf("%v", req.URL)
+	Problem := fmt.Sprintf("%v", req.URL.Path)
+	fmt.Println("problem ---> ", Problem)
 	Entry := Factory.Create(Problem)
 	ret = Entry.Init(req)
 	if ret != 0 {

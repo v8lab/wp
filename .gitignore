@@ -1,0 +1,6 @@
+
+show/pkg/windows_amd64/base.a
+show/pkg/windows_amd64/client.a
+proj01/src/main/main.exe
+*.a
+*.exe

@@ -33,8 +33,8 @@ func (r *ClientsStu) Find(Id string) (Client *ClientStu) {
 	return
 }
 
-var ClientId01 string = "clientId01"
-var ClientId02 string = "clientId02"
+var ClientId01 string = "clientid01"
+var ClientId02 string = "clientid02"
 
 func init() {
 	Clients := GetClientsStu()

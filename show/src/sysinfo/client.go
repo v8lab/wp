@@ -3,56 +3,63 @@ package sysinfo
 import (
 	. "base"
 	client "client"
+	"fmt"
 	tool "tool"
 )
 
 const (
-	KindCliList string = "/sysinfo/clientlist"
+	KindClient string = "/sysinfo/client"
 )
 
 func init() {
 	Factory := GetSingleFactory()
-	Factory.Add(KindCliList, func() EntryIntf { return &ClientListStu{EntryStu: NewEmptyEntry(KindCliList)} })
+	Factory.Add(KindClient, func() EntryIntf { return &ClientStu{EntryStu: NewEmptyEntry(KindClient)} })
 
 	ProRso := GetSingleProblemResolveMap()
-	ProRso.Add(KindCliList, KindCliList)
+	ProRso.Add(KindClient, KindClient)
 }
 
-type ClientListStu struct {
+type ClientStu struct {
 	*EntryStu
 	EntryRst *EntryStu
 	*tool.TwLogStu
+	ClientId string
 }
 
-func (r *ClientListStu) InitPrn() (ret int) {
+func (r *ClientStu) InitPrn() (ret int) {
 	r.TwLogStu = tool.NewTwLogStu("%v\t%v\t\n")
 	return
 }
 
-func (r *ClientListStu) ScanClients() (ret int) {
+func (r *ClientStu) ScanClient() (ret int) {
 	Clients := client.GetClientsStu()
-	for k, v := range Clients.Clients {
-		r.Print(k, v.GetId())
+	Client := Clients.Find(r.ClientId)
+	if Client != nil {
+		kv := Client.GetDetail()
+		for k, v := range kv {
+			r.Print(k, v)
+		}
 	}
 	return
 }
-func (r *ClientListStu) CreateRst() (ret int) {
+func (r *ClientStu) CreateRst() (ret int) {
 	r.EntryRst = NewEmptyEntry("")
 	r.EntryRst.SetBody(r.Flush())
 	return
 }
-func (r *ClientListStu) Execute() (EntryOut *EntryStu, ret int) {
+func (r *ClientStu) Execute() (EntryOut *EntryStu, ret int) {
 	defer func() {
 		EntryOut = r.EntryRst
 	}()
-
+	fmt.Println("enter ")
 	ret = r.InitPrn()
-	r.Print("clilist", "--list--")
+	r.ClientId = r.Form.Get("id")
+	r.Print("client", r.ClientId)
 	if ret != 0 {
 		r.Print("error", "r.InitPrn")
 		return
 	}
-	ret = r.ScanClients()
+	ret = r.ScanClient()
 	if ret != 0 {
 		r.Print("error", "r.ScanClients")
 		return

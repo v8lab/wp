@@ -27,3 +27,10 @@ func (r *ClientStu) Update() (ret int) {
 func (r *ClientStu) GetId() (Id string) {
 	return r.Id
 }
+
+func (r *ClientStu) GetDetail() (kv map[string]string) {
+	kv = make(map[string]string, 0)
+	kv["id"] = r.Id
+	kv["data"] = r.Data
+	return
+}
