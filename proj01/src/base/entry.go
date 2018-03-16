@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	Twlog "twlog"
 )
 
 const (
@@ -19,17 +18,16 @@ func NewEmptyEntry(Kind string) *EntryStu {
 }
 
 type EntryStu struct {
-	Id         string         `json:"msgid"`
-	PathId     string         `json:"pathid"`
-	Kind       string         `json:"framekind"`
-	ExecStatus int            `json:"execstatus"`
-	ErrCode    int            `json:"errcode"`
-	Method     string         `json:"method"`
-	Url        string         `json:"url"`
-	StatusCode int            `json:"status"`
-	Header     http.Header    `json:"headers"`
-	Body       string         `json:"body"`
-	PrnLog     Twlog.TwLogStu `json:"-"`
+	Id         string      `json:"msgid"`
+	PathId     string      `json:"pathid"`
+	Kind       string      `json:"framekind"`
+	ExecStatus int         `json:"execstatus"`
+	ErrCode    int         `json:"errcode"`
+	Method     string      `json:"method"`
+	Url        string      `json:"url"`
+	StatusCode int         `json:"status"`
+	Header     http.Header `json:"headers"`
+	Body       string      `json:"body"`
 }
 
 func (r *EntryStu) Init(req *http.Request) (ret int) {
@@ -39,53 +37,17 @@ func (r *EntryStu) Init(req *http.Request) (ret int) {
 	r.SetMethod(Mothod)
 
 	Url := fmt.Sprintf("%v", req.URL)
-	if len(Url) <= 1 {
-		//		PrnLog.Error("EntryStu init req url is empty")
-		return -1
-	}
 	r.SetUrl(Url)
 
 	r.SetHeader(req.Header)
 
 	Body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		//		PrnLog.Error("EntryStu init read req body error")
 		return -1
 	}
 	r.SetBody(string(Body))
 
 	return
-}
-
-func (r *EntryStu) SetErrCode(ErrCode int) {
-	r.ErrCode = ErrCode
-}
-func (r *EntryStu) GetErrCode() int {
-	return r.ErrCode
-}
-func (r *EntryStu) SetExecStatus(ExecStatus int) {
-	r.ExecStatus = ExecStatus
-}
-func (r *EntryStu) GetExecStatus() int {
-	return r.ExecStatus
-}
-func (r *EntryStu) SetMethod(Method string) {
-	r.Method = Method
-}
-func (r *EntryStu) GetMethod() (Method string) {
-	return r.Method
-}
-func (r *EntryStu) SetHeader(Header http.Header) {
-	r.Header = Header
-}
-func (r *EntryStu) GetHeader() http.Header {
-	return r.Header
-}
-func (r *EntryStu) SetBody(Body string) {
-	r.Body = Body
-}
-func (r *EntryStu) GetBody() (Body string) {
-	return r.Body
 }
 func (r *EntryStu) SetId(Id string) {
 	r.Id = Id
@@ -99,11 +61,29 @@ func (r *EntryStu) SetKind(Kind string) {
 func (r *EntryStu) GetKind() (Kind string) {
 	return r.Kind
 }
+func (r *EntryStu) SetMethod(Method string) {
+	r.Method = Method
+}
+func (r *EntryStu) GetMethod() (Method string) {
+	return r.Method
+}
 func (r *EntryStu) SetUrl(Url string) {
 	r.Url = Url
 }
 func (r *EntryStu) GetUrl() (Url string) {
 	return r.Url
+}
+func (r *EntryStu) SetHeader(Header http.Header) {
+	r.Header = Header
+}
+func (r *EntryStu) GetHeader() http.Header {
+	return r.Header
+}
+func (r *EntryStu) SetBody(Body string) {
+	r.Body = Body
+}
+func (r *EntryStu) GetBody() (Body string) {
+	return r.Body
 }
 func (r *EntryStu) ToJson() string {
 	Data, _ := json.Marshal(r)
