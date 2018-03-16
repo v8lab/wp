@@ -3,7 +3,6 @@ package sysinfo
 import (
 	. "base"
 	client "client"
-
 	tool "tool"
 )
 
@@ -31,7 +30,18 @@ func (r *ClientStu) InitPrn() (ret int) {
 	return
 }
 
-func (r *ClientStu) ScanClient() (ret int) {
+func (r *ClientStu) GetInfoClis() (ret int) {
+	r.Print("client", "--list--")
+	r.Print("-----", "----------")
+	Clients := client.GetClientsStu()
+	for k, v := range Clients.Clients {
+		r.Print(k, v.GetId())
+	}
+	return
+}
+func (r *ClientStu) GetInfoCli() (ret int) {
+	r.Print("client", r.ClientId)
+	r.Print("-----", "----------")
 	Clients := client.GetClientsStu()
 	Client := Clients.Find(r.ClientId)
 	if Client != nil {
@@ -42,16 +52,26 @@ func (r *ClientStu) ScanClient() (ret int) {
 	}
 	return
 }
+func (r *ClientStu) GetInfo() (ret int) {
+	r.ClientId = r.Form.Get("id")
+	if len(r.ClientId) == 0 {
+		ret = r.GetInfoClis()
+		if ret != 0 {
+			r.Print("error", "r.ScanClients")
+			return
+		}
+	} else {
+		ret = r.GetInfoCli()
+		if ret != 0 {
+			r.Print("error", "r.ScanClients")
+			return
+		}
+	}
+	return
+}
 func (r *ClientStu) CreateRst() (ret int) {
 	r.EntryRst = NewEmptyEntry("")
 	r.EntryRst.SetBody(r.Flush())
-	return
-}
-func (r *ClientStu) ScanClients() (ret int) {
-	Clients := client.GetClientsStu()
-	for k, v := range Clients.Clients {
-		r.Print(k, v.GetId())
-	}
 	return
 }
 
@@ -60,28 +80,15 @@ func (r *ClientStu) Execute() (EntryOut *EntryStu, ret int) {
 		EntryOut = r.EntryRst
 	}()
 
-	r.ClientId = r.Form.Get("id")
 	ret = r.InitPrn()
 	if ret != 0 {
 		r.Print("error", "r.InitPrn")
 		return
 	}
-	if len(r.ClientId) == 0 {
-		r.Print("client", "--list--")
-		r.Print("-----", "----------")
-		ret = r.ScanClients()
-		if ret != 0 {
-			r.Print("error", "r.ScanClients")
-			return
-		}
-	} else {
-		r.Print("client", r.ClientId)
-		r.Print("-----", "----------")
-		ret = r.ScanClient()
-		if ret != 0 {
-			r.Print("error", "r.ScanClients")
-			return
-		}
+	ret = r.GetInfo()
+	if ret != 0 {
+		r.Print("error", "r.GetInfo")
+		return
 	}
 	ret = r.CreateRst()
 	if ret != 0 {
