@@ -1,0 +1,9 @@
+docker Data Volumns
+repository 是存放镜像的地方，之前的操作全部使用官方默认仓库，这里着重说明怎样搭建私有仓库
+ 
+1 使用registry镜像创建私有仓库
+docker run -d -p 5000:5000 registry
+默认会将仓库创建在容器的/tmp/registry目录下
+
+2 (略)
+ 
