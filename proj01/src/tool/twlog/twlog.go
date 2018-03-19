@@ -134,13 +134,6 @@ func (r *TwLogStu) DepthIncr() {
 	}
 }
 
-//func (r *TwLogStu) Jump() *TwLogStu {
-
-//	if r.LogLevel == LOG_DBG {
-//		//		fmt.Fprintf(r.Tw, r.Format, time.Since(r.Tin), r.Tree(), "JUMP", r.GetPlaceTime(2))
-//	}
-//	return r
-//}
 func (r *TwLogStu) Enter() *TwLogStu {
 	r.Snap()
 	r.DepthIncr()
@@ -152,7 +145,7 @@ func (r *TwLogStu) Enter() *TwLogStu {
 func (r *TwLogStu) Exit() {
 	if r.LogLevel == LOG_DBG {
 		fmt.Fprintf(r.Tw, r.Format, " ", r.TreeEnd(), libf.IntToString(r.Depth)+">", r.GetPlaceTime(2)+" -- "+time.Since(r.Tins[r.Depth-1]).String())
-		//		fmt.Fprintf(r.Tw, r.Format, " ", r.TreeArg(-1), , " ")
+
 	}
 	r.Depth--
 
