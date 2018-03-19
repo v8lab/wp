@@ -1,4 +1,4 @@
-package myflag
+package tool
 
 import (
 	"fmt"
