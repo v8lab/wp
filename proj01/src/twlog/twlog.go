@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"runtime"
 	"strconv"
-	"strings"
+
 	"text/tabwriter"
 	"time"
+
+	libf "libfunc"
 )
 
 func NewTwLogStu(Id string) *TwLogStu {
@@ -26,6 +28,7 @@ const (
 
 type TwLogStu struct {
 	Tag      string
+	Url      string
 	Format   string
 	LogLevel int
 	LogTag   string
@@ -36,8 +39,8 @@ type TwLogStu struct {
 	Tlst     int64
 	Tnow     int64
 	PwdPre   string
-	Tw       *tabwriter.Writer
 	Buf      *bytes.Buffer
+	Tw       *tabwriter.Writer
 }
 
 func (r *TwLogStu) Init(Id string) {
@@ -48,9 +51,20 @@ func (r *TwLogStu) Init(Id string) {
 	r.LogTag = "DEBUG"
 	r.Buf = new(bytes.Buffer)
 	r.Tw = new(tabwriter.Writer).Init(r.Buf, 0, 8, 2, ' ', 0)
-	fmt.Fprintf(r.Tw, r.Format, "["+time.Now().Format(TIME_FORMAT)+"]", "START", r.Tag, "")
+	r.Start()
 }
+func (r *TwLogStu) Start() {
+	fmt.Fprintf(r.Tw, r.Format, " ", "START", r.Tag, " ")
+}
+func (r *TwLogStu) SetUrl(Url string) {
+	r.Url = Url
+}
+func (r *TwLogStu) GetRst() string {
 
+	fmt.Fprintf(r.Tw, r.Format, " ", "FINISH", r.Tag, " ")
+	r.Tw.Flush()
+	return r.Buf.String()
+}
 func (r *TwLogStu) SetLogLevel(Level int) {
 	r.LogLevel = Level
 	if r.LogLevel == LOG_DBG {
@@ -93,16 +107,16 @@ func (r *TwLogStu) Error(v ...interface{}) {
 }
 
 func (r *TwLogStu) write(v ...interface{}) {
-	r.Nop()
-	fmt.Fprintf(r.Tw, r.Format, "", r.Tree(), r.LogTag, r.GetPlaceTime(3))
-	fmt.Fprintf(r.Tw, r.Format, "", r.Tree(), "", "---------DETAIL-----------")
+	fmt.Fprintf(r.Tw, r.Format, " ", r.Tree(), r.LogTag, r.GetPlaceTime(3))
+	//	fmt.Fprintf(r.Tw, r.Format, " ", r.Tree(), " ", "---------DETAIL-----------")
 	Str := fmt.Sprint(v)
 	row := 0
-	for row < len(Str)/100 {
-		fmt.Fprintf(r.Tw, r.Format, "", r.Tree(), "", Str[row*100:100*(row+1)])
+	RowLength := 100
+	for row < len(Str)/RowLength {
+		fmt.Fprintf(r.Tw, r.Format, " ", r.Tree(), " ", Str[row*RowLength:RowLength*(row+1)])
 		row++
 	}
-	fmt.Fprintf(r.Tw, r.Format, "", r.Tree(), "", Str[row*100:len(Str)])
+	fmt.Fprintf(r.Tw, r.Format, " ", r.Tree(), " ", Str[row*RowLength:len(Str)])
 }
 func (r *TwLogStu) Snap() {
 	Tin := time.Now()
@@ -119,35 +133,49 @@ func (r *TwLogStu) DepthIncr() {
 		r.DepthMax = r.Depth
 	}
 }
-func (r *TwLogStu) From() *TwLogStu {
+
+//func (r *TwLogStu) Jump() *TwLogStu {
+
+//	if r.LogLevel == LOG_DBG {
+//		//		fmt.Fprintf(r.Tw, r.Format, time.Since(r.Tin), r.Tree(), "JUMP", r.GetPlaceTime(2))
+//	}
+//	return r
+//}
+func (r *TwLogStu) Enter() *TwLogStu {
 	r.Snap()
 	r.DepthIncr()
 	if r.LogLevel == LOG_DBG {
-		fmt.Fprintf(r.Tw, r.Format, "", r.TreeArg(-1), "", "")
-		fmt.Fprintf(r.Tw, r.Format, time.Since(r.Tin), r.Tree(), "FROM", r.GetPlaceTime(2))
-	}
-	return r
-}
-func (r *TwLogStu) To() *TwLogStu {
-	if r.LogLevel == LOG_DBG {
-		fmt.Fprintf(r.Tw, r.Format, "", r.Tree(), "TO", r.GetPlaceTime(2))
+		fmt.Fprintf(r.Tw, r.Format, time.Since(r.Tin), r.Tree(), "<"+libf.IntToString(r.Depth), r.GetPlaceTime(2))
 	}
 	return r
 }
 func (r *TwLogStu) Exit() {
 	if r.LogLevel == LOG_DBG {
-		r.Nop()
-		fmt.Fprintf(r.Tw, r.Format, time.Since(r.Tin), r.TreeEnd(), "EXIT", r.GetPlaceTime(2))
-		fmt.Fprintf(r.Tw, r.Format, "", r.TreeArg(-1), time.Since(r.Tins[r.Depth-1]), "")
+		fmt.Fprintf(r.Tw, r.Format, " ", r.TreeEnd(), libf.IntToString(r.Depth)+">", r.GetPlaceTime(2)+" -- "+time.Since(r.Tins[r.Depth-1]).String())
+		//		fmt.Fprintf(r.Tw, r.Format, " ", r.TreeArg(-1), , " ")
 	}
 	r.Depth--
 
 }
 func (r *TwLogStu) GetPlaceTime(depth int) (Rst string) {
-	funcName, file, line, ok := runtime.Caller(depth)
+	FuncName, file, line, ok := runtime.Caller(depth)
+	funcName := runtime.FuncForPC(FuncName).Name()
 	if ok {
-		file = strings.Replace(file, r.PwdPre, "/", -1)
-		Rst = file + "|" + "L" + strconv.Itoa(line) + "|" + runtime.FuncForPC(funcName).Name()
+		short := file
+		for i := len(file) - 1; i > 0; i-- {
+			if file[i] == '/' {
+				short = file[i+1:]
+				break
+			}
+		}
+
+		for i := len(funcName) - 1; i > 0; i-- {
+			if funcName[i] == '.' {
+				funcName = funcName[i+1:]
+				break
+			}
+		}
+		Rst = short + "|" + strconv.Itoa(line) + "|" + funcName
 	}
 	return
 }
@@ -165,11 +193,7 @@ func (r *TwLogStu) TreeEnd() string {
 	Str02 := string(bytes.Repeat([]byte("-"), 8*Max-r.Depth))
 	return Str01 + Str02
 }
-func (r *TwLogStu) Flush() {
-	r.Nop()
-	fmt.Fprintf(r.Tw, r.Format, "["+time.Now().Format(TIME_FORMAT)+"]", "FINISH", r.Tag, "")
-	r.Tw.Flush()
-}
+
 func (r *TwLogStu) Nop() {
-	fmt.Fprintf(r.Tw, r.Format, "", r.Tree(), "", "")
+	fmt.Fprintf(r.Tw, r.Format, " ", r.Tree(), " ", " ")
 }
