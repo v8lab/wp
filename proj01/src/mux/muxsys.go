@@ -31,14 +31,12 @@ func SysHandle(w http.ResponseWriter, req *http.Request) {
 	var EntryResp *EntryStu
 	defer func() {
 		Tool.SetHeader(w)
-		if ret == 0 {
-			if EntryResp != nil {
-				w.Write([]byte(EntryResp.GetBody()))
-			}
+		if EntryResp != nil {
+			w.Write([]byte(EntryResp.GetBody()))
 		}
 	}()
 	Factory := GetSingleFactory()
-	Problem := fmt.Sprintf("%v", req.URL)
+	Problem := fmt.Sprintf("%v", req.URL.Path)
 	Entry := Factory.Create(Problem)
 	ret = Entry.Init(req)
 	if ret != 0 {
@@ -46,7 +44,7 @@ func SysHandle(w http.ResponseWriter, req *http.Request) {
 	}
 	EntryResp, ret = Entry.Execute()
 	if ret != 0 {
-
+		return
 	}
 	return
 }
