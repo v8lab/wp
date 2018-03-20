@@ -1,0 +1,17 @@
+CentOS 7
+
+1 关闭防火墙
+ systemctl disable firewalld
+ systemctl stop firewalld
+
+2 安装 etcd Kubernetes软件(自动安装docker)
+ yum install -y etcd kubernetes
+
+3 按顺序启动所有服务
+ systemctl start etcd
+ systemctl start docker
+ systemctl start kube-apiserver
+ systemctl start kube-controller-manager
+ systemctl start kube-scheduler
+ systemctl start kubelet
+ systemctl start kube-proxy

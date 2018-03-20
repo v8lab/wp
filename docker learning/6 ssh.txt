@@ -4,3 +4,5 @@ docker ssh
   apt-get install vim
 1 sudo apt-get install openssh-server -y
 2 sudo systemctl start sshd.service
+
+1 生成自签名证书
