@@ -1,5 +1,10 @@
 CentOS 7
 
+方法一（推荐）： 离线使用 kubeadm 创建 kubernetes 1.9.2 集群
+https://my.oschina.net/binges/blog/1615955
+
+方法二： 
+
 1 关闭防火墙
  systemctl disable firewalld
  systemctl stop firewalld
