@@ -3,6 +3,8 @@ CentOS 7
 方法一（推荐）： 离线使用 kubeadm 创建 kubernetes 1.9.2 集群
 https://my.oschina.net/binges/blog/1615955
 
+https://segmentfault.com/a/1190000012755243
+
 方法二： 
 
 1 关闭防火墙
@@ -90,4 +92,18 @@ http://blog.csdn.net/andriy_dangli/article/details/79269348
 http://windgreen.me/
 https://my.oschina.net/binges/blog/1615955
 http://blog.csdn.net/andriy_dangli/article/details/79269348
+
+
+
+ 
+ 如果长时间（等待的时间超过3分钟以上）始终停留在“[init] This might take a minute or longer if the control plane images have to be pulled.”，就要查看/var/log/message里的内容，是什么错误导致初始化失败。
+排除错误后，先重置，再初始化。
+# 初始化过程出现错误时，使用下面的命令重置
+
+kubeadm reset
+
+# 重置后再初始化
+kubeadm init –kubernetes-version=v1.9.2 –pod-network-cidr=172.17.0.0/16 –apiserver-advertise-address=192.168.112.132
+上图中的token信息要记得保留，等会node的加入需要使用。如果忘记了，可以在master上通过kubeadm token list得到。默认token在24小时后过期，后续的node要加入集群需要在master节点上用下面的命令重新生成token。
+kubeadm token create
  
