@@ -26,6 +26,36 @@ func init() {
 				EntryStu: mbase.NewEntryStu(),
 			}
 		})
+	Factory.Add(KindCli02Obv03,
+		func() mbase.EntryIntf {
+			return &Cli02Obv02Stu{
+				EntryStu: mbase.NewEntryStu(),
+			}
+		})
+	Factory.Add(KindCli02Obv04,
+		func() mbase.EntryIntf {
+			return &Cli02Obv02Stu{
+				EntryStu: mbase.NewEntryStu(),
+			}
+		})
+	Factory.Add(KindCli03Obv02,
+		func() mbase.EntryIntf {
+			return &Cli02Obv02Stu{
+				EntryStu: mbase.NewEntryStu(),
+			}
+		})
+	Factory.Add(KindCli03Obv03,
+		func() mbase.EntryIntf {
+			return &Cli02Obv02Stu{
+				EntryStu: mbase.NewEntryStu(),
+			}
+		})
+	Factory.Add(KindCli04Obv02,
+		func() mbase.EntryIntf {
+			return &Cli02Obv02Stu{
+				EntryStu: mbase.NewEntryStu(),
+			}
+		})
 }
 
 type Cli02Obv02Stu struct {
