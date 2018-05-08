@@ -100,9 +100,12 @@ func (r *EntryDataStu) GetOtherIp() (Ip string) {
 		r.RData[OtherIpStart+3])
 	return ip.String()
 }
-func (r *EntryDataStu) GetOtherPort() (Ip string) {
+func (r *EntryDataStu) GetOtherPort() (Port string) {
 	port := int(r.RData[OtherPortStart])*256 + int(r.RData[OtherPortStart+1])
 	return strconv.Itoa(port)
+}
+func (r *EntryDataStu) GetOtherPortInt() (Port int) {
+	return int(r.RData[OtherPortStart])*256 + int(r.RData[OtherPortStart+1])
 }
 func (r *EntryDataStu) SetKind(Kind byte) {
 	r.SData[KindStart] = Kind

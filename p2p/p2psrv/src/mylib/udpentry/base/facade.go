@@ -1,13 +1,12 @@
 package base
 
 import (
-	"fmt"
 	"net"
 
 	mylib "mylib"
 )
 
-func EntryFacade(Data []byte, Addr *net.UDPAddr) (ret int) {
+func Facade(Data []byte, Addr *net.UDPAddr) (ret int) {
 
 	if len(Data) < 5 {
 		mylib.PrnLog.Debug("")
@@ -17,8 +16,8 @@ func EntryFacade(Data []byte, Addr *net.UDPAddr) (ret int) {
 	Factory := GetEntryFactory()
 	Pro := int(Data[KindStart])
 	Rsv := ProRsv.GetRsv(Pro)
-	fmt.Println("pro ---> ", Pro)
-	fmt.Println("rsv ---> ", Rsv)
+	mylib.PrnLog.Debug("pro ---> ", Pro)
+	mylib.PrnLog.Debug("rsv ---> ", Rsv)
 	if Rsv == 0 {
 		return
 	}
@@ -39,6 +38,5 @@ func EntryFacade(Data []byte, Addr *net.UDPAddr) (ret int) {
 	if ret != 0 {
 		return
 	}
-
 	return
 }

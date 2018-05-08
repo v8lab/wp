@@ -52,22 +52,22 @@ func (r *SrvUdpStu) GetConn() (conn *net.UDPConn) {
 	return r.conn
 }
 
-func (r *SrvUdpStu) StartRead() {
+func (r *SrvUdpStu) Read() {
 	for {
 		data := make([]byte, 4096)
 		n, addr, err := r.conn.ReadFromUDP(data)
 		if err != nil {
-			fmt.Println("err", err)
+			mylib.PrnLog.Error("err", err)
 			continue
 		} else {
-			fmt.Println("addr", addr)
-			fmt.Println("data", data[:n])
+			mylib.PrnLog.Error("addr", addr)
+			mylib.PrnLog.Error("data", data[:n])
 			r.WriteAddr([]byte("i am server"), addr)
-			go base.EntryFacade(data[:n], addr)
+			go base.Facade(data[:n], addr)
 		}
 	}
 }
-func (r *SrvUdpStu) ConnTicker() {
+func (r *SrvUdpStu) KeepAlive() {
 	ticker := time.NewTicker(time.Millisecond * 50)
 	for range ticker.C {
 		t := time.Now()

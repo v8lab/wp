@@ -51,14 +51,6 @@ func GetPrnLogInstance() (inst *PrnLogStu) {
 	return
 }
 
-func PrnLogGet(sysflagIn string) (inst *PrnLogStu) {
-	inst = &ThisPrnLog
-	if len(sysflagIn) > 0 {
-		inst.Sysflag = sysflagIn
-	}
-	return
-}
-
 func (this *PrnLogStu) SetLogLevel(logLevel, DbLogLevel string) {
 	logLevel = strings.TrimSpace(strings.ToUpper(logLevel))
 	DbLogLevel = strings.TrimSpace(strings.ToUpper(DbLogLevel))
@@ -85,12 +77,6 @@ func (this *PrnLogStu) SetLogLevel(logLevel, DbLogLevel string) {
 	}
 }
 
-func (this *PrnLogStu) Debugf(format string, v ...interface{}) {
-	if this.LogLevel <= LOG_DEBUG {
-		this.output(DEBUGName, format, v...)
-	}
-}
-
 func (this *PrnLogStu) Debug(v ...interface{}) {
 	if this.LogLevel <= LOG_DEBUG {
 		this.output(DEBUGName, "", v...)
@@ -102,31 +88,16 @@ func (this *PrnLogStu) Info(v ...interface{}) {
 		this.output(INFOName, "", v...)
 	}
 }
-func (this *PrnLogStu) Infof(format string, v ...interface{}) {
-	if this.LogLevel <= LOG_INFO {
-		this.output(INFOName, format, v...)
-	}
-}
 
 func (this *PrnLogStu) Warning(v ...interface{}) {
 	if this.LogLevel <= LOG_WARNING {
 		this.output(WARNINGName, "", v...)
 	}
 }
-func (this *PrnLogStu) Warningf(format string, v ...interface{}) {
-	if this.LogLevel <= LOG_WARNING {
-		this.output(WARNINGName, format, v...)
-	}
-}
 
 func (this *PrnLogStu) Error(v ...interface{}) {
 	if this.LogLevel <= LOG_ERROR {
 		this.output(ERRORName, "", v...)
-	}
-}
-func (this *PrnLogStu) Errorf(format string, v ...interface{}) {
-	if this.LogLevel <= LOG_ERROR {
-		this.output(ERRORName, format, v...)
 	}
 }
 

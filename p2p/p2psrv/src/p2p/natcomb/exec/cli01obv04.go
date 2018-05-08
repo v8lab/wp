@@ -16,6 +16,27 @@ var (
 func init() {
 
 	Factory := mbase.GetMethodFactory()
+	Factory.Add(KindCli01Obv01,
+		func() mbase.EntryIntf {
+			return &Cli01Obv04Stu{
+				EntryStu: mbase.NewEntryStu(),
+			}
+		})
+
+	Factory.Add(KindCli01Obv02,
+		func() mbase.EntryIntf {
+			return &Cli01Obv04Stu{
+				EntryStu: mbase.NewEntryStu(),
+			}
+		})
+
+	Factory.Add(KindCli01Obv03,
+		func() mbase.EntryIntf {
+			return &Cli01Obv04Stu{
+				EntryStu: mbase.NewEntryStu(),
+			}
+		})
+
 	Factory.Add(KindCli01Obv04,
 		func() mbase.EntryIntf {
 			return &Cli01Obv04Stu{

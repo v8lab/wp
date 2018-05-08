@@ -1,7 +1,6 @@
 package lsrv
 
 import (
-	"fmt"
 	"net"
 	"os"
 	"sync"
@@ -53,11 +52,11 @@ func (r *SrvUdpStu) Login() (ret int) {
 
 	a, b, err := r.cli.Discover()
 	if err != nil {
-		fmt.Println("err", err)
+		mylib.PrnLog.Error("err", err)
 		return
 	}
-	fmt.Println("a", a)
-	fmt.Println("b", b)
+	mylib.PrnLog.Debug("a", a)
+	mylib.PrnLog.Debug("b", b)
 
 	LoginReq := GetSingleLoginReq()
 
@@ -76,17 +75,17 @@ func (r *SrvUdpStu) Login() (ret int) {
 
 	return
 }
-func (r *SrvUdpStu) StartRead() {
+func (r *SrvUdpStu) Read() {
 	for {
 		data := make([]byte, 1024)
 		n, addr, err := r.conn.ReadFromUDP(data)
 		if err != nil {
-			fmt.Println("err", err)
+			mylib.PrnLog.Error("err", err)
 			time.Sleep(time.Second * 1)
 			continue
 		} else {
-			fmt.Println("addr", addr)
-			go base.EntryFacade(data[:n], addr)
+			mylib.PrnLog.Debug("addr", addr)
+			go base.Facade(data[:n], addr)
 		}
 	}
 }
@@ -101,12 +100,11 @@ func (r *SrvUdpStu) Heart2srv() {
 	raddrstr := "180.76.119.248:55500"
 	raddr, err := net.ResolveUDPAddr("udp", raddrstr)
 	if err != nil {
-		fmt.Println("net.ResolveUDPAddr fail.", err)
+		mylib.PrnLog.Error("net.ResolveUDPAddr", err)
 		os.Exit(1)
 	}
 	ticker := time.NewTicker(time.Second * 5)
 	for range ticker.C {
-		mylib.PrnLog.Debug("weite to server", raddr)
 		r.conn.WriteTo([]byte("Hello"), raddr)
 	}
 }
@@ -120,7 +118,7 @@ func init() {
 	if ret != 0 {
 		mylib.PrnLog.Error("Login")
 	}
-	go SrvUdp.StartRead()
+	go SrvUdp.Read()
 	go SrvUdp.ReadTicker()
 	//	go SrvUdp.Heart2srv()
 

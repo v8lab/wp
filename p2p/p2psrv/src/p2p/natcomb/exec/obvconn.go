@@ -44,11 +44,12 @@ func (r *ObvConnRespStu) Distribute() (ret int) {
 	SrvUdp := srv.GetSingleSrvUdp()
 	Factory := method.GetMethodFactory()
 	Method := Factory.Create(r.CliNatType + r.ObvNatType)
+	mylib.PrnLog.Debug("  method ---- ", r.CliNatType)
+	mylib.PrnLog.Debug("  method ---- ", r.CliAddr)
+	mylib.PrnLog.Debug("  method ---- ", r.ObvNatType)
+	mylib.PrnLog.Debug("  method ---- ", r.ObvAddr)
 	if Method == nil {
-		mylib.PrnLog.Error("no method ---- ", r.CliNatType)
-		mylib.PrnLog.Error("no method ---- ", r.CliAddr)
-		mylib.PrnLog.Error("no method ---- ", r.ObvNatType)
-		mylib.PrnLog.Error("no method ---- ", r.ObvAddr)
+		mylib.PrnLog.Error(" no method ---- ")
 		return
 	}
 	Method.Init(r.CliAddr, r.ObvAddr, SrvUdp.GetConn())

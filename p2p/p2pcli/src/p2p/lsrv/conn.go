@@ -35,7 +35,6 @@ func (r *ObvConnReqStu) Execute() (ret int) {
 	mylib.PrnLog.Debug("LoginReqStu Execute")
 	SrvUdp := GetSingleSrvUdp()
 	Rsrv := GetSingleRSrvInfo()
-
 	SrvUdp.WriteUdp(r.SData, Rsrv.GetAddr())
 	mylib.PrnLog.Debug("time")
 

@@ -17,10 +17,10 @@ func init() {
 }
 func SrvInit() {
 	SrvUdp := GetSingleSrvUdp()
-	go SrvUdp.ConnTicker()
+	go SrvUdp.KeepAlive()
 	fmt.Println("SrvUdp.Dis()")
 	//	SrvUdp.Dis()
-	go SrvUdp.StartRead()
+	go SrvUdp.Read()
 }
 
 func ScanObvs() {

@@ -42,10 +42,10 @@ func (r *Cli02Obv02Stu) Execute() (ret int) {
 	r.Data01.SetOtherAddr(r.LAddr)
 	r.WriteAddr(r.Data01.SData, r.RAddr)
 
-	r.Data01 = base.NewEntryDataStu(nil, nil)
-	r.Data01.SetKind(byte(207))
-	r.Data01.SetOtherAddr(r.RAddr)
-	r.WriteAddr(r.Data01.SData, r.LAddr)
+	r.Data02 = base.NewEntryDataStu(nil, nil)
+	r.Data02.SetKind(byte(207))
+	r.Data02.SetOtherAddr(r.RAddr)
+	r.WriteAddr(r.Data02.SData, r.LAddr)
 
 	return
 }

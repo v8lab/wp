@@ -30,6 +30,8 @@ var OtherPortLen int = 2
 var VedioDataStart int = 20
 var VedioDatalen int = 500
 
+var EntryKindHeart int = 110
+
 const (
 	NATError int = iota
 	NATUnknown
