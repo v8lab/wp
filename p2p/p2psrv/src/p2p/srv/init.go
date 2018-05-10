@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	base "mylib/udpentry/base"
-
+	base "mylib/nat/base"
 	clis "p2p/cli"
 	obvs "p2p/obv"
 )

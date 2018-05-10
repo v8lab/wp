@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	aggr "mylib/aggr"
-	base "mylib/udpentry/base"
+	base "mylib/nat/base"
 )
 
 var SingleObservers ObserversStu

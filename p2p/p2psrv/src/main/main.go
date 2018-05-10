@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	_ "p2p/init"
+	_ "p2p"
 )
 
 func main() {

@@ -8,7 +8,9 @@ import (
 	"time"
 
 	mylib "mylib"
-	base "mylib/udpentry/base"
+	base "mylib/nat/base"
+
+	setting "p2p/setting"
 
 	stun "github.com/ccding/go-stun/stun"
 )
@@ -27,7 +29,10 @@ type SrvUdpStu struct {
 }
 
 func (r *SrvUdpStu) Init() {
-	addr, err := net.ResolveUDPAddr("udp", ":55500")
+
+	Setting := setting.GetSetting()
+
+	addr, err := net.ResolveUDPAddr("udp", ":"+Setting.Port)
 	if err != nil {
 		mylib.PrnLog.Error("Can't resolve address: ", err)
 		os.Exit(1)

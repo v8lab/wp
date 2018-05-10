@@ -2,5 +2,6 @@
  
 <setting>
 <model>obv</model>
+<srvaddr>180.76.119.248:55500</srvaddr>
 </setting>
  

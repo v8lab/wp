@@ -6,7 +6,7 @@ import (
 	"time"
 
 	aggr "mylib/aggr"
-	base "mylib/udpentry/base"
+	base "mylib/nat/base"
 	lsrv "p2p/lsrv"
 )
 
@@ -25,7 +25,15 @@ type ObserversStu struct {
 func (r *ObserversStu) Add(cli *base.EntryDataStu) {
 	r.aggr.Add(cli.GetId(), cli)
 }
-
+func (r *ObserversStu) Find(Id string) (cli *base.EntryDataStu, exist bool) {
+	if v, e := r.aggr.Find(Id); e {
+		if vv, ok := v.(*base.EntryDataStu); ok {
+			cli = vv
+			exist = true
+		}
+	}
+	return
+}
 func (r *ObserversStu) Init() {
 	r.aggr = aggr.NewAggregateStu()
 }

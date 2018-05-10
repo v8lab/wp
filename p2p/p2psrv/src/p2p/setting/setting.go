@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net"
 
 	"sync"
 )
@@ -21,21 +20,10 @@ func GetSetting() *SettingStu {
 
 type SettingStu struct {
 	XMLName xml.Name `xml:"setting"`
-	Model   string   `xml:"model"`
-	SrvAddr string   `xml:"srvaddr"`
+	Port    string   `xml:"port"`
 
 	sync.RWMutex `xml:"-"`
 	FilePath     string `xml:"-"`
-}
-
-func (r *SettingStu) GetSrvAddr() (Addr *net.UDPAddr) {
-	addr, err := net.ResolveUDPAddr("udp", r.SrvAddr)
-	if err != nil {
-		fmt.Println("net.ResolveUDPAddr fail.", err)
-		return
-	}
-	Addr = addr
-	return Addr
 }
 
 func (r *SettingStu) Init() {

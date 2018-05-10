@@ -4,7 +4,8 @@ import (
 	"sync"
 
 	mylib "mylib"
-	base "mylib/udpentry/base"
+	base "mylib/nat/base"
+	setting "p2p/setting"
 )
 
 var EntryObvConnReq int = 57
@@ -34,8 +35,8 @@ type ObvConnReqStu struct {
 func (r *ObvConnReqStu) Execute() (ret int) {
 	mylib.PrnLog.Debug("LoginReqStu Execute")
 	SrvUdp := GetSingleSrvUdp()
-	Rsrv := GetSingleRSrvInfo()
-	SrvUdp.WriteUdp(r.SData, Rsrv.GetAddr())
+	Setting := setting.GetSetting()
+	SrvUdp.WriteUdp(r.SData, Setting.GetSrvAddr())
 	mylib.PrnLog.Debug("time")
 
 	return

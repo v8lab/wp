@@ -2,7 +2,7 @@ package lsrv
 
 import (
 	mylib "mylib"
-	base "mylib/udpentry/base"
+	base "mylib/nat/base"
 )
 
 var EntryVedioReq int = 234

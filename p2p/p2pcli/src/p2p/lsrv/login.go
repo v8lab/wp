@@ -1,11 +1,12 @@
 package lsrv
 
 import (
+	"net"
 	"sync"
 	"time"
 
 	mylib "mylib"
-	base "mylib/udpentry/base"
+	base "mylib/nat/base"
 	setting "p2p/setting"
 )
 
@@ -37,9 +38,14 @@ type LoginReqStu struct {
 func (r *LoginReqStu) Execute() (ret int) {
 	mylib.PrnLog.Debug("LoginReqStu Execute")
 	SrvUdp := GetSingleSrvUdp()
-	Rsrv := GetSingleRSrvInfo()
+	Setting := setting.GetSetting()
 	r.Chan = make(chan int)
-	SrvUdp.WriteUdp(r.SData, Rsrv.GetAddr())
+	mylib.PrnLog.Debug("SrvUdp.Conn.LocalAddr().String()", SrvUdp.Conn.LocalAddr().String())
+	Ip := net.ParseIP(SrvUdp.Conn.LocalAddr().String())
+	mylib.PrnLog.Debug("SrvUdp.Conn.LocalAddr().String()", Ip.To4())
+	//	r.SetIp(SrvUdp.Conn.LocalAddr().String())
+
+	SrvUdp.WriteUdp(r.SData, Setting.GetSrvAddr())
 	mylib.PrnLog.Debug("time")
 	timer := time.NewTimer(50 * time.Second)
 	select {

@@ -7,8 +7,7 @@ import (
 	"time"
 
 	mylib "mylib"
-	base "mylib/udpentry/base"
-
+	base "mylib/nat/base"
 	setting "p2p/setting"
 
 	stun "github.com/ccding/go-stun/stun"
@@ -23,9 +22,9 @@ func GetSingleSrvUdp() *SrvUdpStu {
 }
 
 type SrvUdpStu struct {
-	conn    *net.UDPConn
+	Conn    *net.UDPConn
 	Addr    *net.UDPAddr
-	cli     *stun.Client
+	Cli     *stun.Client
 	NatType int
 }
 
@@ -37,20 +36,20 @@ func (r *SrvUdpStu) Init() {
 		mylib.PrnLog.Error("Can't resolve address: ", err)
 		os.Exit(1)
 	}
-	r.conn, err = net.ListenUDP("udp", r.Addr)
+	r.Conn, err = net.ListenUDP("udp", r.Addr)
 	if err != nil {
 		mylib.PrnLog.Error("net.ListenUDP Addr ---", r.Addr)
 		mylib.PrnLog.Error("net.ListenUDP err ---", err)
 		return
 	}
 	t := time.Now()
-	r.conn.SetDeadline(t.Add(time.Duration(30 * time.Second)))
-	r.cli = stun.NewClientWithConnection(r.conn)
+	r.Conn.SetDeadline(t.Add(time.Duration(30 * time.Second)))
+	r.Cli = stun.NewClientWithConnection(r.Conn)
 	return
 }
 func (r *SrvUdpStu) Login() (ret int) {
 
-	a, b, err := r.cli.Discover()
+	a, b, err := r.Cli.Discover()
 	if err != nil {
 		mylib.PrnLog.Error("err", err)
 		return
@@ -78,7 +77,7 @@ func (r *SrvUdpStu) Login() (ret int) {
 func (r *SrvUdpStu) Read() {
 	for {
 		data := make([]byte, 1024)
-		n, addr, err := r.conn.ReadFromUDP(data)
+		n, addr, err := r.Conn.ReadFromUDP(data)
 		if err != nil {
 			mylib.PrnLog.Error("err", err)
 			time.Sleep(time.Second * 1)
@@ -93,7 +92,7 @@ func (r *SrvUdpStu) ReadTicker() {
 	ticker := time.NewTicker(time.Millisecond * 5)
 	for range ticker.C {
 		t := time.Now()
-		r.conn.SetDeadline(t.Add(time.Duration(5 * time.Second)))
+		r.Conn.SetDeadline(t.Add(time.Duration(5 * time.Second)))
 	}
 }
 func (r *SrvUdpStu) Heart2srv() {
@@ -103,13 +102,13 @@ func (r *SrvUdpStu) Heart2srv() {
 		mylib.PrnLog.Error("net.ResolveUDPAddr", err)
 		os.Exit(1)
 	}
-	ticker := time.NewTicker(time.Second * 5)
+	ticker := time.NewTicker(time.Second * 20)
 	for range ticker.C {
-		r.conn.WriteTo([]byte("Hello"), raddr)
+		r.Conn.WriteTo([]byte("Hello"), raddr)
 	}
 }
 func (r *SrvUdpStu) WriteUdp(Data []byte, Addr net.Addr) {
-	r.conn.WriteTo(Data, Addr)
+	r.Conn.WriteTo(Data, Addr)
 }
 func init() {
 	SrvUdp := GetSingleSrvUdp()
@@ -120,6 +119,6 @@ func init() {
 	}
 	go SrvUdp.Read()
 	go SrvUdp.ReadTicker()
-	//	go SrvUdp.Heart2srv()
+	go SrvUdp.Heart2srv()
 
 }
