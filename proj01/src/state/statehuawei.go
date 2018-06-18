@@ -14,10 +14,7 @@ func GetSingleStateHuawei() *StateHuawei {
 }
 
 type StateHuawei struct {
-	sync.RWMutex
-	running   bool
-	interrupt chan int
-	buffer    []int
+	*StateBase
 }
 
 func (r *StateHuawei) Task(data int) {
@@ -29,14 +26,17 @@ func (r *StateHuawei) Execute() {
 	if r.Running() {
 		return
 	}
+
 	for {
 		select {
 		case <-r.interrupt:
 			r.running = false
 		default:
 			select {
-			case data <- r.buffer:
-				go r.Task(data)
+			case data := <-r.buffer:
+				if v, ok := data.(int); ok {
+					go r.Task(v)
+				}
 			case <-r.interrupt:
 				r.running = false
 			default:
@@ -44,24 +44,5 @@ func (r *StateHuawei) Execute() {
 				r.running = false
 			}
 		}
-	}
-}
-func (r *StateHuawei) Running() bool {
-	r.Lock()
-	defer r.Unlock()
-
-	if r.running {
-		return true
-	}
-
-	r.running = true
-	return false
-}
-func (r *StateHuawei) Stop() {
-	r.Lock()
-	defer r.Unlock()
-	if r.running() {
-		r.running = false
-		r.interrupt <- 1
 	}
 }

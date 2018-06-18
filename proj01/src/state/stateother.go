@@ -1,7 +1,9 @@
 package state
 
 import (
+	"fmt"
 	"sync"
+	"time"
 )
 
 var SingleStateOther StateOther
@@ -12,9 +14,7 @@ func GetSinleStateOther() *StateOther {
 }
 
 type StateOther struct {
-	running   bool
-	interrupt chan int
-	buffer    []int
+	*StateBase
 }
 
 func (r *StateOther) Task(data int) {

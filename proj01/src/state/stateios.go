@@ -1,7 +1,9 @@
 package state
 
 import (
+	"fmt"
 	"sync"
+	"time"
 )
 
 var SingleStateIos StateIos
@@ -12,9 +14,7 @@ func GetSinleStateIos() *StateIos {
 }
 
 type StateIos struct {
-	running   bool
-	interrupt chan int
-	buffer    []int
+	*StateBase
 }
 
 func (r *StateIos) Task(data int) {
@@ -29,8 +29,10 @@ func (r *StateIos) Execute() {
 			r.running = false
 		default:
 			select {
-			case data <- r.buffer:
-				go r.Task(data)
+			case data := <-r.buffer:
+				if v, ok := data.(int); ok {
+					go r.Task(v)
+				}
 			case <-r.interrupt:
 				r.running = false
 			default:
@@ -38,11 +40,5 @@ func (r *StateIos) Execute() {
 				r.running = false
 			}
 		}
-	}
-}
-func (r *StateIos) Stop() {
-	if r.running {
-		r.running = false
-		r.interrupt <- 1
 	}
 }

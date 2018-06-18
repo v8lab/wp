@@ -2,7 +2,6 @@ package state
 
 import (
 	"sync"
-	"time"
 )
 
 var SingleContext Context
@@ -27,7 +26,7 @@ type Context struct {
 
 func (r *Context) Init() {
 	r.StateIos = GetSinleStateIos()
-	r.StateHuaWei = GetSingleStateHuawei()
+	r.StateHuawei = GetSingleStateHuawei()
 	r.StateOther = GetSinleStateOther()
 }
 func (r *Context) IosOver() {
@@ -60,17 +59,16 @@ func (r *Context) DispatchStart() {
 		default:
 			select {
 			case <-r.cIos:
-				r.StateHuaWei.Stop()
+				r.StateHuawei.Stop()
 				r.StateOther.Stop()
 				go r.StateIos.Execute()
 			case <-r.cHuawei:
-				r.State.Stop()
-				r.State = GetSingleStateHuawei()
+				r.StateOther.Stop()
 				go r.StateHuawei.Execute()
 			default:
 				select {
 				case <-r.cIos:
-					r.StateHuaWei.Stop()
+					r.StateHuawei.Stop()
 					r.StateOther.Stop()
 					go r.StateIos.Execute()
 				case <-r.cHuawei:
@@ -79,7 +77,7 @@ func (r *Context) DispatchStart() {
 					go r.StateHuawei.Execute()
 				case <-r.cOther:
 					r.StateIos.Stop()
-					r.StateHuaWei.Stop()
+					r.StateHuawei.Stop()
 					go r.StateOther.Execute()
 				}
 			}
