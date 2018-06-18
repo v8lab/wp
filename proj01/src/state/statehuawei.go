@@ -39,9 +39,11 @@ func (r *StateHuawei) Execute() {
 				}
 			case <-r.interrupt:
 				r.running = false
+				return
 			default:
 				GetSingleContext().HuaweiOver()
 				r.running = false
+				return
 			}
 		}
 	}

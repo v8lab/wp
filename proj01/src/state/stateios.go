@@ -39,9 +39,11 @@ func (r *StateIos) Execute() {
 				}
 			case <-r.interrupt:
 				r.running = false
+				return
 			default:
 				GetSingleContext().IosOver()
 				r.running = false
+				return
 			}
 		}
 	}

@@ -38,9 +38,11 @@ func (r *StateOther) Execute() {
 				}
 			case <-r.interrupt:
 				r.running = false
+				return
 			default:
 				GetSingleContext().OtherOver()
 				r.running = false
+				return
 			}
 		}
 	}
