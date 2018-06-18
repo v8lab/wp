@@ -58,13 +58,11 @@ func (r *Context) DispatchStart() {
 			go r.StateIos.Execute()
 		default:
 			select {
-			case <-r.cIos:
-				r.StateHuawei.Stop()
-				r.StateOther.Stop()
-				go r.StateIos.Execute()
 			case <-r.cHuawei:
-				r.StateOther.Stop()
-				go r.StateHuawei.Execute()
+				if !r.StateIos.Running() {
+					r.StateOther.Stop()
+					go r.StateHuawei.Execute()
+				}
 			default:
 				select {
 				case <-r.cIos:
@@ -72,13 +70,14 @@ func (r *Context) DispatchStart() {
 					r.StateOther.Stop()
 					go r.StateIos.Execute()
 				case <-r.cHuawei:
-					r.StateIos.Stop()
-					r.StateOther.Stop()
-					go r.StateHuawei.Execute()
+					if !r.StateIos.Running() {
+						r.StateOther.Stop()
+						go r.StateHuawei.Execute()
+					}
 				case <-r.cOther:
-					r.StateIos.Stop()
-					r.StateHuawei.Stop()
-					go r.StateOther.Execute()
+					if !r.StateIos.Running() && !r.StateHuawei.Running() {
+						go r.StateOther.Execute()
+					}
 				}
 			}
 		}
