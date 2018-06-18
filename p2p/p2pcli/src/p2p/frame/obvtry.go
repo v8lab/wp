@@ -35,7 +35,7 @@ func (r *LoginObvTryOne2OthStu) Execute() (ret int) {
 				return
 			}
 			r.SetKind(byte(238))
-			r.SetId(12348888)
+			r.SetId(9999999)
 			SrvUdp.WriteUdp(r.SData, IpPortAddr)
 		}
 		mylib.PrnLog.Debug("trying to", IpStr)
@@ -53,6 +53,7 @@ func (r *LoginObvTryOth2OneStu) Execute() (ret int) {
 	mylib.PrnLog.Debug("LoginTryOth2OneStu")
 	SrvUdp := lsrv.GetSingleSrvUdp()
 	r.SetKind(byte(239))
+	r.SetId(99999999)
 	SrvUdp.WriteUdp(r.SData, r.Addr)
 	return
 }
@@ -66,7 +67,7 @@ func (r *LoginObvTryOneEndStu) Execute() (ret int) {
 		mylib.PrnLog.Debug("LoginTryOneEndStu")
 		SrvUdp := lsrv.GetSingleSrvUdp()
 		r.SetKind(byte(208))
-		r.SetId(1234888)
+		r.SetId(12348888)
 		SrvUdp.WriteUdp(r.SData, r.Addr)
 		time.Sleep(time.Second * 5)
 	}
