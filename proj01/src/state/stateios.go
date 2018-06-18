@@ -23,6 +23,10 @@ func (r *StateIos) Task(data int) {
 }
 
 func (r *StateIos) Execute() {
+	if r.Running() {
+		return
+	}
+
 	for {
 		select {
 		case <-r.interrupt:
