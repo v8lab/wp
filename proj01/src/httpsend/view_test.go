@@ -1,12 +1,11 @@
-package view
+package httpsend
 
 import (
 	"fmt"
 	"testing"
-)
-import (
-	base "view/base"
-	setting "view/setting"
+
+	base "httpsend/base"
+	setting "httpsend/setting"
 )
 
 func Test_Setting(t *testing.T) {
@@ -14,7 +13,7 @@ func Test_Setting(t *testing.T) {
 	CaseId := "caseid01"
 	Queue := "11111222223333333"
 
-	Setting := setting.GetSetstingFile("setting.xml")
+	Setting := setting.NewSetstingFile("./xmlfile/setting.xml")
 
 	Case, eCase := Setting.Find(CaseId)
 	if eCase {
